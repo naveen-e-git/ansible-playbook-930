@@ -1,0 +1,18 @@
+---
+
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: ipv4 address
+      debug:
+        msg: "{{ansible_all_ipv4_addresses}}"
+
+    - name: date & time
+      debug:
+        msg: "{{ansible_date_time.date}}"
+
+
+    - name: os family
+      debug:
+        msg: "{{ansible_os_family}}"

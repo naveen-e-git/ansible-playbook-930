@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    htmltemplate: https://www.free-css.com/assets/files/free-css-templates/download/page241/sports.zip
+  tasks:
+
+    - name: download html template
+      get_url:
+        url: "{{htmltemplate}}"
+        dest: /home/ansadm/
+
+    - name: unzip html template
+      unarchive:
+        src: /home/ansadm/sports.zip
+        dest: /home/ansadm/
+        remote_src: yes
+
+    - name: copy sports dir
+      copy:
+        src: /home/ansadm/sports
+        dest: /var/www/html/
+        remote_src: yes
