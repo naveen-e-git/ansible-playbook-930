@@ -1,0 +1,18 @@
+---
+
+- hosts: ubuntu
+  become: yes
+  vars_files:
+    - varfile.yml
+  tasks:
+
+    - name: install packages
+      yum:
+        name: "{{item}}"
+        state: present
+      loop:
+          - "{{pack1}}"
+          - "{{pack2}}"
+          - "{{pack3}}"
+          - "{{pack4}}"
+ 

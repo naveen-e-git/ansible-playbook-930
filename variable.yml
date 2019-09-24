@@ -1,0 +1,31 @@
+---
+
+- hosts: centos
+  become: yes
+  vars:
+    pack1: vsftpd
+    pack2: unzip
+    pack3: tree
+    pack4: wget
+  tasks:
+
+    - name: install "{{pack1}}"
+      yum:
+        name: "{{pack1}}"
+        state: present
+
+
+    - name: install unzip
+      yum:
+        name: "{{pack2}}"
+        state: present
+
+    - name: install tree
+      yum:
+        name: "{{pack3}}"
+        state: present
+
+    - name: install wget
+      yum:
+        name: "{{pack4}}"
+        state: present

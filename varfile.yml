@@ -1,0 +1,4 @@
+pack1: vsftpd
+pack2: wget
+pack3: unzip
+pack4: python
