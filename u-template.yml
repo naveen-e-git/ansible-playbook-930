@@ -1,0 +1,10 @@
+---
+
+- hosts: ubuntu
+  become: yes
+  tasks:
+
+    - name: copy index.html
+      template:
+        src: template/index.j2
+        dest: /var/www/html/index.html

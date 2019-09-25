@@ -1,0 +1,33 @@
+---
+
+- hosts: ubuntu
+  become: yes
+  vars:
+    tomcat: http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.46/bin/apache-tomcat-8.5.46.tar.gz
+    jdk: openjdk-8-jdk
+  tasks:
+
+    - name: install java
+      apt:
+        name: "{{jdk}}"
+        state: present
+      
+
+    - name: download tomcat 8 tar file
+      get_url:
+        url: "{{tomcat}}"
+        dest: /opt/
+      register: tomurl1
+
+    - name: print tomurl
+      debug: 
+        msg: "{{tomurl1}}"
+
+    - name: untar tomcat
+      unarchive:
+        src: "{{tomurl1.dest}}"
+        dest: /opt/
+        remote_src: yes
+
+    - name: start tomcat
+      shell: nohup /opt/apache-tomcat-8.5.46/bin/startup.sh & 

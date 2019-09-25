@@ -1,0 +1,28 @@
+---
+
+- hosts: centos
+  become: yes
+  tasks:
+
+    - name: install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+
+    - name: copy index.html
+      template:
+        src: template/index.j2
+        dest: /var/www/html/index.html
+      notify: restart
+
+
+  handlers:
+    - name: restart
+      service:
+        name: httpd
+        state: restarted
