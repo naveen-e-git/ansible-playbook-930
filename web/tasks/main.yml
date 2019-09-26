@@ -1,0 +1,28 @@
+---
+# tasks file for web
+
+- name: install packages
+  apt:
+    name: "{{item}}"
+    state: present
+  loop:
+      - "{{jdk}}"
+      - "{{build}}"
+      - "{{scm}}"
+
+- name: install mysql
+  apt:
+    name: mysql-server
+    state: present
+ 
+
+- name: copy httpd conf file
+  copy: 
+    src: httpd.conf
+    dest: /tmp
+
+- name: copy template
+  template:
+    src: index.j2
+    dest: /var/www/html/index.html
+  notify: restart

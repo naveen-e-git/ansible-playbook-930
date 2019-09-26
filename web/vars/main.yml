@@ -1,0 +1,5 @@
+---
+# vars file for web
+jdk: openjdk-8-jdk
+build: maven
+scm: git

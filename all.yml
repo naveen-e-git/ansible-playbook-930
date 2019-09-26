@@ -1,0 +1,43 @@
+---
+
+- hosts: ubuntu
+  become: yes
+  vars:
+    jdk: openjdk-8-jdk
+    build: maven
+    scm: git
+  tasks:
+
+    - name: install packages
+      apt:
+        name: "{{item}}"
+        state: present
+      loop:
+          - "{{jdk}}"
+          - "{{build}}"
+          - "{{scm}}"
+
+    - name: install mysql
+      apt:
+        name: mysql-server
+        state: present
+ 
+
+    - name: copy httpd conf file
+      copy: 
+        src: file/httpd.conf
+        dest: /tmp
+
+    - name: copy template
+      template:
+        src: template/index.j2
+        dest: /var/www/html/index.html
+      notify: restart
+
+
+  handlers:
+    - name: restart
+      service:
+        name: apache2
+        state: restarted
+ 
