@@ -1,0 +1,28 @@
+- hosts: ubuntu
+  become: yes
+  vars:
+    java: openjdk-8-jdk
+  tasks:
+  
+    - name: install java 1.8
+      apt:
+        name: "{{java}}"
+        state: present
+
+    - name: adding repo key for jenkins
+      apt_key: 
+        url: https://pkg.jenkins.io/debian/jenkins-ci.org.key
+        state: present
+
+
+    - name: adding repository for jenkins
+      apt_repository:
+        repo:  deb http://pkg.jenkins.io/debian-stable binary/
+        state: present
+        filename: jenkins.list
+
+    - name: install jenkins
+      apt:
+        update_cache: yes
+        name: jenkins
+        state: present
