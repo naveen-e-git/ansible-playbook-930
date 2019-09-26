@@ -1,0 +1,52 @@
+---
+
+- hosts: ubuntu
+  become: yes
+  vars:
+    mysql: mysql-server
+ 
+  tasks:
+  
+    - name: install mysql-server
+      apt:
+        name: "{{item}}"
+        state: present
+      with_items:
+          - "{{mysql}}"
+          - python
+          - python-mysqldb
+
+    - name: start mysql service
+      service:
+        name: mysql
+        state: started
+
+    - name: copy index.html file
+      template:
+        src: template/index.j2
+        dest: /var/www/html/index.html
+
+    - name: creating accounts database
+      mysql_db:
+        name: accounts
+        state: present
+
+    - name: creating mysql user
+      mysql_user:
+        name: admin
+        password: admin
+        priv: '*.*:ALL'
+        host: '%' 
+        state: present
+
+    - name: copy mysql-conf files
+      copy:
+        src: files/mysqld.cnf
+        dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+      notify: restart mysql
+
+  handlers:
+    - name: restart mysql
+      service:
+        name: mysql
+        state: restarted  
