@@ -1,0 +1,54 @@
+---
+- hosts: ubuntu
+  become: yes
+  vars:
+    jdk: openjdk-8-jdk
+    buildtool: maven
+    scm: git
+    tomcaturl: http://apachemirror.wuchna.com/tomcat/tomcat-8/v8.5.47/bin/apache-tomcat-8.5.47.tar.gz
+    projecturl: https://github.com/wkhanvisualpathit/VProfile.git
+  tasks:
+
+    - name: install dependency packages for coutinous integration
+      apt:
+        name: "{{item}}"
+        state: present
+      with_items:
+          - "{{jdk}}"
+          - "{{buildtool}}"
+          - "{{scm}}"
+
+    - name: cloning project repository
+      git:
+        repo: "{{projecturl}}"
+        dest: /home/ansadm/vprofile
+
+    - name: build vprofile project
+      shell: mvn -f /home/ansadm/vprofile package 
+
+
+    - name: download tomcat 8
+      get_url:
+        url: "{{tomcaturl}}"
+        dest: /home/ansadm
+      register: tomcatoutput
+
+    - name: print tdownload
+      debug:
+        msg: "{{tomcatoutput}}"
+
+    - name: extract tomcat 8 tar file
+      unarchive:
+        src: "{{tomcatoutput.dest}}"
+        dest: /home/ansadm
+        remote_src: yes
+      register: extarct
+
+    - name: copy artifact into tomcat webapps folder
+      copy:
+        src: /home/ansadm/vprofile/target/vprofile-v1.war
+        dest: /home/ansadm/apache-tomcat-8.5.47/webapps
+        remote_src: yes
+
+    - name: start tomcat
+      shell: nohup /home/ansadm/apache-tomcat-8.5.47/bin/startup.sh &
